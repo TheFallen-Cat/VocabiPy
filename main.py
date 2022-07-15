@@ -11,7 +11,7 @@ class App(ctk.CTk):
         #--------------------Main root Window--------------------#
         self.main = ctk.CTk()
         self.main.geometry('500x400')
-        self.main.title("Python Dictionary")
+        self.main.title("VocabiPy")
         self.main.config()
 
 
