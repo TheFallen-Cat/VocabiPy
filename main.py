@@ -12,6 +12,7 @@ class App(ctk.CTk):
         self.main = ctk.CTk()
         self.main.geometry('500x400')
         self.main.title("VocabiPy")
+        self.main.iconbitmap("mainicon.ico")
         self.main.config()
 
 
