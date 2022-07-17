@@ -1,8 +1,14 @@
+from typing import Type
 import requests
 import json
+from googletrans import Translator, LANGUAGES
 
 
+#Translator object
+translator = Translator()
 
+
+available_languages = list(LANGUAGES.values())
 def meaning(query : str):
     try:
         URL = f"https://api.dictionaryapi.dev/api/v2/entries/en/{query}"
@@ -26,4 +32,13 @@ def meaning(query : str):
     except:
         error_message = ['Couldnt find that meaning!']
         return error_message
+
+def translate(text, language : str):
+    try:
+        translated_text = translator.translate(text=text, dest=language)
+        return translated_text.text
+
+    except:
+        return "Couldn't translate that!"    
+
 

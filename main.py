@@ -1,8 +1,10 @@
 from tkinter import ANCHOR, BOTH, END, HORIZONTAL, LEFT, TOP, X
+from ttkwidgets.autocomplete import AutocompleteEntry
 import customtkinter as ctk
 import tkinter as tk
 import pyperclip as clip
 import dictionarymethods as dt
+
 
 class App(ctk.CTk):
 
@@ -13,7 +15,7 @@ class App(ctk.CTk):
         self.main.geometry('500x400')
         self.main.title("VocabiPy")
         self.main.iconbitmap("mainicon.ico")
-        self.main.config()
+
 
 
         #--------------------Settings Frame--------------------#
@@ -35,18 +37,18 @@ class App(ctk.CTk):
         #--------------------Inside settings_frame--------------------#
 
         #button for copying the meaning to clipboard
-        self.copy_meaning_button = ctk.CTkButton(self.settings_frame, text="Copy Meaning", text_font=('Fixedsys', 12), width=40, command=self.copy_meaning)
+        self.copy_meaning_button = ctk.CTkButton(self.settings_frame, text="Copy Meaning", text_font=('Fixedsys', 12), width=40, command=self.CopyMeaning)
         self.copy_meaning_button.grid(row=0, column=1, padx=5, pady=5, sticky='nswe')
 
 
         #change font option menu
-        self.change_font_button = ctk.CTkButton(self.settings_frame, text="Change Font", text_font=('Fixedsys', 12), command=self.change_font)
+        self.change_font_button = ctk.CTkButton(self.settings_frame, text="Change Font", text_font=('Fixedsys', 12), command=self.ChangeFont)
         self.change_font_button.grid(row=0, column=2, padx=5, pady=5, sticky='nswe')
 
 
 
         #change theme option menu
-        self.theme_menu = ctk.CTkOptionMenu(self.settings_frame, values=['Dark','Light','System'], text_font=('Fixedsys', 12), command=self.change_theme)
+        self.theme_menu = ctk.CTkOptionMenu(self.settings_frame, values=['Dark','Light','System'], text_font=('Fixedsys', 12), command=self.ChangeTheme)
         self.theme_menu.grid(row=0, column=3, padx=5, pady=5, sticky='nswe')
 
 
@@ -54,12 +56,20 @@ class App(ctk.CTk):
         #--------------------Inside entry_frame--------------------#
 
         #taking the query input
-        self.query_entry = ctk.CTkEntry(self.entry_frame, width=200, border_width=1, placeholder_text="Search the word...", text_font=('fixedsys',12))
+        self.query_entry = ctk.CTkEntry(self.entry_frame, width=180, border_width=1, placeholder_text="Search word...", text_font=('fixedsys',12))
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
 
+        #preferred language
+        self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=('Fixedsys', 12), width=80, placeholder_text="language")
+        self.language_entry.grid(row=0, column=1, pady=5, padx=5)
+
+    
+    
         #search for the meaning button
-        self.search_button = ctk.CTkButton(self.entry_frame, text="Search", width=50, text_font=('Fixedsys', 12), command=self.search_meaning)
-        self.search_button.grid(row=0, column=1, pady=5, padx=5)
+        self.search_button = ctk.CTkButton(self.entry_frame, text="Search", width=50, text_font=('Fixedsys', 12), command=self.SearchMeaning)
+        self.search_button.grid(row=0, column=2, pady=5, padx=5)
+
+
 
 
         #--------------------TextBox for displaying the meanings--------------------#
@@ -78,7 +88,8 @@ class App(ctk.CTk):
     #--------------------class App Attributes/Functions--------------------#
 
     #inserting the found meaning in the text box
-    def search_meaning(self):
+    def SearchMeaning(self):
+        language_selected = self.language_entry.get()
         self.search_results.config(state='normal')
         self.search_results.delete('1.0',END)
         entry = self.query_entry.get()
@@ -86,7 +97,13 @@ class App(ctk.CTk):
 
         if len(meaning_list) != 1:
             for meanings in meaning_list:
-                self.search_results.insert(END, f"■  {meanings}\n\n")
+                final_meaning = dt.translate(meanings, language_selected)
+                if final_meaning == "Couldn't translate that!":
+                    self.search_results.insert(END, final_meaning)
+                    return
+
+                else:
+                    self.search_results.insert(END, f"■  {final_meaning}\n\n")
 
         else:
             tips = "Possible causes for error :- \n    Check for Typos\n    The word might not be available in the API"
@@ -96,7 +113,7 @@ class App(ctk.CTk):
 
 
     #change theme command
-    def change_theme(self, mode):
+    def ChangeTheme(self, mode):
         ctk.set_appearance_mode(mode)
         if mode == 'Light':
             self.search_results.config(fg='#202020', bg='#dadada')
@@ -106,7 +123,7 @@ class App(ctk.CTk):
 
 
     #change font command
-    def change_font(self):
+    def ChangeFont(self):
         #getting the name of the font
         font_name_input = ctk.CTkInputDialog(master=None, text="Enter font name...", title="Change Font")
         font = font_name_input.get_input()
@@ -130,7 +147,7 @@ class App(ctk.CTk):
             
 
     #copy the meaning
-    def copy_meaning(self):
+    def CopyMeaning(self):
         meaning = self.search_results.get('1.0','end')
         clip.copy(meaning)
 
