@@ -8,6 +8,9 @@
 
 
 <h1>Light Mode</h1>
+
+> with translation
+
 <img src="ui-images\LightMode.PNG" alt="Light mode VocabiPy"></img>
 
 

@@ -62,6 +62,7 @@ class App(ctk.CTk):
         #preferred language
         self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=('Fixedsys', 12), width=80, placeholder_text="language")
         self.language_entry.grid(row=0, column=1, pady=5, padx=5)
+        self.language_entry.insert(0, 'english')
 
     
     
