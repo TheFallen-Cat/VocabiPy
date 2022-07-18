@@ -15,6 +15,7 @@ class App(ctk.CTk):
         self.main.geometry('500x400')
         self.main.title("VocabiPy")
         self.main.iconbitmap("mainicon.ico")
+        self.selected_font = ('Fixedsys', 12)
 
 
 
@@ -37,18 +38,18 @@ class App(ctk.CTk):
         #--------------------Inside settings_frame--------------------#
 
         #button for copying the meaning to clipboard
-        self.copy_meaning_button = ctk.CTkButton(self.settings_frame, text="Copy Meaning", text_font=('Fixedsys', 12), width=40, command=self.CopyMeaning)
+        self.copy_meaning_button = ctk.CTkButton(self.settings_frame, text="Copy Meaning", text_font=self.selected_font, width=40, command=self.CopyMeaning)
         self.copy_meaning_button.grid(row=0, column=1, padx=5, pady=5, sticky='nswe')
 
 
         #change font option menu
-        self.change_font_button = ctk.CTkButton(self.settings_frame, text="Change Font", text_font=('Fixedsys', 12), command=self.ChangeFont)
+        self.change_font_button = ctk.CTkButton(self.settings_frame, text="Change Font", text_font=self.selected_font, command=self.ChangeFont)
         self.change_font_button.grid(row=0, column=2, padx=5, pady=5, sticky='nswe')
 
 
 
         #change theme option menu
-        self.theme_menu = ctk.CTkOptionMenu(self.settings_frame, values=['Dark','Light','System'], text_font=('Fixedsys', 12), command=self.ChangeTheme)
+        self.theme_menu = ctk.CTkOptionMenu(self.settings_frame, values=['Dark','Light','System'], text_font=self.selected_font, command=self.ChangeTheme)
         self.theme_menu.grid(row=0, column=3, padx=5, pady=5, sticky='nswe')
 
 
@@ -60,21 +61,21 @@ class App(ctk.CTk):
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
 
         #preferred language
-        self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=('Fixedsys', 12), width=80, placeholder_text="language")
+        self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=self.selected_font, width=80, placeholder_text="language")
         self.language_entry.grid(row=0, column=1, pady=5, padx=5)
         self.language_entry.insert(0, 'english')
 
     
     
         #search for the meaning button
-        self.search_button = ctk.CTkButton(self.entry_frame, text="Search", width=50, text_font=('Fixedsys', 12), command=self.SearchMeaning)
+        self.search_button = ctk.CTkButton(self.entry_frame, text="Search", width=50, text_font=self.selected_font, command=self.SearchMeaning)
         self.search_button.grid(row=0, column=2, pady=5, padx=5)
 
 
 
 
         #--------------------TextBox for displaying the meanings--------------------#
-        self.search_results = tk.Text(self.main, font=('Fixedsys', 12), fg='white', bg='#303031', border=0, relief='flat')
+        self.search_results = tk.Text(self.main, font=self.selected_font, fg='white', bg='#303031', border=0, relief='flat')
         self.search_results.pack(fill=BOTH, expand=True, pady=10, padx=10, ipadx=10, ipady=10)
         self.search_results.config(state='disabled')
 
@@ -138,7 +139,8 @@ class App(ctk.CTk):
             # self.theme_menu.config(text_font=(font, 12))
             # self.query_entry.config(text_font=(font, 12))
             # self.search_button.config(text_font=(font, 12))
-            self.search_results.config(font=(font, 12))
+            self.selected_font = (font, 12)
+            self.search_results.config(font=self.selected_font)
             
         except:
             error_message = "Couldn't change the font!"
