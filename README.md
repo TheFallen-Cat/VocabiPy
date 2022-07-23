@@ -16,4 +16,4 @@
 
 <p>This Project has been made possible with the help of <a href="https://dictionaryapi.dev/">Dictionary API</a> made by <a href="https://github.com/meetDeveloper">meetDeveloper</a></p>
 
-**Note : This project would recieve updates in the future!**
+**Note : This project will recieve updates in the future!**
