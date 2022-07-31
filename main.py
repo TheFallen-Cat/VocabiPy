@@ -59,6 +59,7 @@ class App(ctk.CTk):
         #taking the query input
         self.query_entry = ctk.CTkEntry(self.entry_frame, width=180, border_width=1, placeholder_text="Search word...", text_font=('fixedsys',12))
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
+        self.query_entry.bind("<Return>", self.SearchMeaning)
 
         #preferred language
         self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=self.selected_font, width=80, placeholder_text="language")
@@ -90,7 +91,7 @@ class App(ctk.CTk):
     #--------------------class App Attributes/Functions--------------------#
 
     #inserting the found meaning in the text box
-    def SearchMeaning(self):
+    def SearchMeaning(self, event = None):
         language_selected = self.language_entry.get()
         self.search_results.config(state='normal')
         self.search_results.delete('1.0',END)
