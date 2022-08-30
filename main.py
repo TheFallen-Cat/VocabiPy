@@ -18,6 +18,7 @@ class App(ctk.CTk):
         self.main.iconbitmap("mainicon.ico")
         self.selected_font = ('Fixedsys', 12)
 
+        self._after_id = None
 
 
         #--------------------Settings Frame--------------------#
@@ -61,6 +62,8 @@ class App(ctk.CTk):
         self.query_entry = ctk.CTkEntry(self.entry_frame, width=180, border_width=1, placeholder_text="Search word...", text_font=('fixedsys',12))
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
         self.query_entry.bind("<Return>", lambda event: threading.Thread(target=self.SearchMeaning).start())
+        # self.query_entry.bind("<Key>", self.search_after_stop_writing)
+
 
         #preferred language
         self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=self.selected_font, width=80, placeholder_text="language")
@@ -156,19 +159,19 @@ class App(ctk.CTk):
         meaning = self.search_results.get('1.0','end')
         clip.copy(meaning)
 
-        
-        
+    def search_after_stop_writing(self, event):
+        """
+        From https://stackoverflow.com/questions/37432598/wait-until-user-stopped-typing-in-tkinter.
+        It will wait an amount of milliseconds after the user stopped writing and start searching for
+        the word automatically if this function is bound to "<Key>".
+        """
+        # Cancels the old job, if it exists.
+        if self._after_id is not None:
+            self.main.after_cancel(self._after_id)
 
-    
-
-
-
-
-
-    
-
-app = App()
-
+        # Creates a new job: it will wait an amount of milliseconds after the user stopped writing
+        # and start searching for the word automatically.
+        self.main.after(2000, lambda: threading.Thread(target=self.SearchMeaning).start())
 
 
 
