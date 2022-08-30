@@ -1,3 +1,4 @@
+import threading
 from tkinter import ANCHOR, BOTH, END, HORIZONTAL, LEFT, TOP, X
 from ttkwidgets.autocomplete import AutocompleteEntry
 import customtkinter as ctk
@@ -59,7 +60,7 @@ class App(ctk.CTk):
         #taking the query input
         self.query_entry = ctk.CTkEntry(self.entry_frame, width=180, border_width=1, placeholder_text="Search word...", text_font=('fixedsys',12))
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
-        self.query_entry.bind("<Return>", self.SearchMeaning)
+        self.query_entry.bind("<Return>", lambda event: threading.Thread(target=self.SearchMeaning).start())
 
         #preferred language
         self.language_entry = ctk.CTkEntry(self.entry_frame, text_font=self.selected_font, width=80, placeholder_text="language")
