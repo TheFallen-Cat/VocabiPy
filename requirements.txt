@@ -1,0 +1,5 @@
+ttkwidgets==0.12.1
+customtkinter==4.5.10
+pyperclip==1.8.2
+requests==2.28.1
+googletrans==3.1.0a0
