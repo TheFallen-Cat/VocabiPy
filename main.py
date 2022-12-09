@@ -34,7 +34,7 @@ class App(ctk.CTk):
 
         self.settings = json.loads(file_settings)
 
-        # This will call the selected font setter and process the string input.
+        # This will call the selected_font.setter and process the string input.
         self.selected_font = self.settings["selected_font"]
 
         # --------------------Settings Frame--------------------#
@@ -57,7 +57,7 @@ class App(ctk.CTk):
         self.copy_meaning_button = ctk.CTkButton(
             self.settings_frame,
             text="Copy Meaning",
-            text_font=self.selected_font,
+            font=self.selected_font,
             width=40,
             command=self.copy_meaning,
         )
@@ -67,7 +67,7 @@ class App(ctk.CTk):
         self.change_font_button = ctk.CTkButton(
             self.settings_frame,
             text="Change Font",
-            text_font=self.selected_font,
+            font=self.selected_font,
             command=self.change_font,
         )
         self.change_font_button.grid(row=0, column=2, padx=5, pady=5, sticky="nswe")
@@ -76,7 +76,7 @@ class App(ctk.CTk):
         self.theme_menu = ctk.CTkOptionMenu(
             self.settings_frame,
             values=["Dark", "Light", "System"],
-            text_font=self.selected_font,
+            font=self.selected_font,
             command=self.change_theme,
         )
         self.theme_menu.grid(row=0, column=3, padx=5, pady=5, sticky="nswe")
@@ -89,7 +89,7 @@ class App(ctk.CTk):
             width=180,
             border_width=1,
             placeholder_text="Search word...",
-            text_font=("fixedsys", 12),
+            font=("fixedsys", 12),
         )
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
         self.query_entry.bind("<Return>", self.search_meaning)
@@ -97,7 +97,7 @@ class App(ctk.CTk):
         # preferred language
         self.language_entry = ctk.CTkEntry(
             self.entry_frame,
-            text_font=self.selected_font,
+            font=self.selected_font,
             width=80,
             placeholder_text="language",
         )
@@ -109,7 +109,7 @@ class App(ctk.CTk):
             self.entry_frame,
             text="Search",
             width=50,
-            text_font=self.selected_font,
+            font=self.selected_font,
             command=self.search_meaning,
         )
         self.search_button.grid(row=0, column=2, pady=5, padx=5)
@@ -223,7 +223,7 @@ class App(ctk.CTk):
         """
         # getting the name of the font
         font_name_input = ctk.CTkInputDialog(
-            master=None,
+            None,
             text="Enter font name...",
             title="Change Font",
         )
@@ -236,20 +236,18 @@ class App(ctk.CTk):
 
         # trying to change the font
         try:
-            # Unfortunately there is no way to configure the font of the ctk widgets yet :(
-
-            # self.copy_meaning_button.config(text_font=(font, 12))
-            # self.change_font_button.config(text_font=(font, 12))
-            # self.theme_menu.config(text_font=(font, 12))
-            # self.query_entry.config(text_font=(font, 12))
-            # self.search_button.config(text_font=(font, 12))
-            self.search_results.config(font=self.selected_font)
+            self.copy_meaning_button.configure(font=self.selected_font)
+            self.change_font_button.configure(font=self.selected_font)
+            self.theme_menu.configure(font=self.selected_font)
+            self.query_entry.configure(font=self.selected_font)
+            self.search_button.configure(font=self.selected_font)
+            self.search_results.configure(font=self.selected_font)
 
         except tk.TclError:
             error_message = "Couldn't change the font!"
-            self.search_results.config(state="normal")
+            self.search_results.configure(state="normal")
             self.search_results.insert(tk.END, error_message)
-            self.search_results.config(state="disabled")
+            self.search_results.configure(state="disabled")
 
     def copy_meaning(self):
         """
