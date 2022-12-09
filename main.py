@@ -24,11 +24,20 @@ class App(ctk.CTk):
         self.iconbitmap("mainicon.ico")
 
         # --------------------Getting Settings-------------------#
+        # Trying to open the settings json file and get its data.
         try:
             with open("./settings.json", encoding="utf-8") as file:
                 file_settings = file.read()
+        # If the settings file doesn't exist, it will create a new one.
         except FileNotFoundError:
-            file_settings = '{"selected_font": "Fixedsys,12", "language": "english"}'
+            # This is just a different way to make a long string
+            file_settings = (
+                "{"
+                + '"selected_font": "Fixedsys,12", '
+                + '"language": "english", '
+                + '"appearance_mode":"System"'
+                + "}"
+            )
             with open("./settings.json", "w", encoding="utf-8") as file:
                 file.write(file_settings)
 
@@ -72,10 +81,15 @@ class App(ctk.CTk):
         )
         self.change_font_button.grid(row=0, column=2, padx=5, pady=5, sticky="nswe")
 
+        # "Workaround" so the first color value is the previously selected one.
+        color_values = ["Dark", "Light", "System"]
+        color_values.remove(self.settings["appearance_mode"])
+        color_values = [self.settings["appearance_mode"]] + color_values
+
         # change theme option menu
         self.theme_menu = ctk.CTkOptionMenu(
             self.settings_frame,
-            values=["Dark", "Light", "System"],
+            values=color_values,
             font=self.selected_font,
             command=self.change_theme,
         )
@@ -89,7 +103,7 @@ class App(ctk.CTk):
             width=180,
             border_width=1,
             placeholder_text="Search word...",
-            font=("fixedsys", 12),
+            font=self.selected_font,
         )
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
         self.query_entry.bind("<Return>", self.search_meaning)
@@ -132,6 +146,9 @@ class App(ctk.CTk):
             ipady=10,
         )
         self.search_results.config(state="disabled")
+
+        # Theme must only be changed after "search_results" is created.
+        self.change_theme(self.settings["appearance_mode"])
 
         # running the app
         self.mainloop()
@@ -211,6 +228,9 @@ class App(ctk.CTk):
         Change theme command.
         """
         ctk.set_appearance_mode(mode)
+        self.settings["appearance_mode"] = mode
+        self.save_settings()
+
         if mode == "Light":
             self.search_results.config(fg="#202020", bg="#dadada")
 
@@ -227,11 +247,12 @@ class App(ctk.CTk):
             text="Enter font name...",
             title="Change Font",
         )
-        font = font_name_input.get_input()
 
-        # Saving font to file
-        self.settings["selected_font"] = f"{font},12"
-        self.selected_font = (font, 12)
+        self.selected_font = font_name_input.get_input()
+
+        # Saving font to file. This way of saving allows the user to input the font
+        # size as well. e.g. write Arial,20 in the input dialog.
+        self.settings["selected_font"] = "{},{}".format(*self.selected_font)
         self.save_settings()
 
         # trying to change the font
@@ -240,6 +261,7 @@ class App(ctk.CTk):
             self.change_font_button.configure(font=self.selected_font)
             self.theme_menu.configure(font=self.selected_font)
             self.query_entry.configure(font=self.selected_font)
+            self.language_entry.configure(font=self.selected_font)
             self.search_button.configure(font=self.selected_font)
             self.search_results.configure(font=self.selected_font)
 
