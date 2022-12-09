@@ -57,7 +57,7 @@ class App(ctk.CTk):
             text="Copy Meaning",
             text_font=self.selected_font,
             width=40,
-            command=self.CopyMeaning,
+            command=self.copy_meaning,
         )
         self.copy_meaning_button.grid(row=0, column=1, padx=5, pady=5, sticky="nswe")
 
@@ -66,7 +66,7 @@ class App(ctk.CTk):
             self.settings_frame,
             text="Change Font",
             text_font=self.selected_font,
-            command=self.ChangeFont,
+            command=self.change_font,
         )
         self.change_font_button.grid(row=0, column=2, padx=5, pady=5, sticky="nswe")
 
@@ -75,7 +75,7 @@ class App(ctk.CTk):
             self.settings_frame,
             values=["Dark", "Light", "System"],
             text_font=self.selected_font,
-            command=self.ChangeTheme,
+            command=self.change_theme,
         )
         self.theme_menu.grid(row=0, column=3, padx=5, pady=5, sticky="nswe")
 
@@ -90,7 +90,7 @@ class App(ctk.CTk):
             text_font=("fixedsys", 12),
         )
         self.query_entry.grid(row=0, column=0, pady=5, padx=5)
-        self.query_entry.bind("<Return>", self.SearchMeaning)
+        self.query_entry.bind("<Return>", self.search_meaning)
 
         # preferred language
         self.language_entry = ctk.CTkEntry(
@@ -108,7 +108,7 @@ class App(ctk.CTk):
             text="Search",
             width=50,
             text_font=self.selected_font,
-            command=self.SearchMeaning,
+            command=self.search_meaning,
         )
         self.search_button.grid(row=0, column=2, pady=5, padx=5)
 
@@ -135,7 +135,7 @@ class App(ctk.CTk):
         self.mainloop()
 
     # --------------------class App Attributes/Functions--------------------#
-    def SearchMeaning(self, event=None):
+    def search_meaning(self, event=None):
         """
         This method inserts the searched meaning in the text box.
         """
@@ -156,9 +156,7 @@ class App(ctk.CTk):
                 if final_meaning == "Couldn't translate that!":
                     self.search_results.insert(tk.END, final_meaning)
                     return
-
-                else:
-                    self.search_results.insert(tk.END, f"■  {final_meaning}\n\n")
+                self.search_results.insert(tk.END, f"■  {final_meaning}\n\n")
 
         else:
             tips = (
@@ -166,11 +164,11 @@ class App(ctk.CTk):
                 + "    Check for Typos\n"
                 + "    The word might not be available in the API"
             )
-            self.search_results.insert(tk.END, "{}\n\n{}".format(meaning_list[0], tips))
+            self.search_results.insert(tk.END, f"{meaning_list[0]}\n\n{tips}")
 
         self.search_results.config(state="disabled")
 
-    def ChangeTheme(self, mode):
+    def change_theme(self, mode):
         """
         Change theme command.
         """
@@ -181,7 +179,7 @@ class App(ctk.CTk):
         else:
             self.search_results.config(fg="white", bg="#303031")
 
-    def ChangeFont(self):
+    def change_font(self):
         """
         Change font command.
         """
@@ -215,7 +213,7 @@ class App(ctk.CTk):
             self.search_results.insert(tk.END, error_message)
             self.search_results.config(state="disabled")
 
-    def CopyMeaning(self):
+    def copy_meaning(self):
         """
         This method copies the meaning in the textbox into the user's
         clipboard.
@@ -224,6 +222,10 @@ class App(ctk.CTk):
         clip.copy(meaning)
 
     def save_settings(self):
+        """
+        This function saves the current state of the settings into
+        the settings.json file.
+        """
         with open("./settings.json", "w", encoding="utf-8") as file:
             file.write(json.dumps(self.settings))
 
