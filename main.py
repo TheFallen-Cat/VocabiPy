@@ -18,10 +18,10 @@ class App(ctk.CTk):
 
     def __init__(self):
         # --------------------Main root Window--------------------#
-        self.main = ctk.CTk()
-        self.main.geometry("500x400")
-        self.main.title("VocabiPy")
-        self.main.iconbitmap("mainicon.ico")
+        super().__init__()
+        self.geometry("500x400")
+        self.title("VocabiPy")
+        self.iconbitmap("mainicon.ico")
 
         # --------------------Getting Settings-------------------#
         try:
@@ -38,7 +38,7 @@ class App(ctk.CTk):
         # --------------------Settings Frame--------------------#
 
         # settings frame for app settings
-        self.settings_frame = ctk.CTkFrame(self.main, width=50)
+        self.settings_frame = ctk.CTkFrame(self, width=50)
         self.settings_frame.pack(fill=tk.X, side=tk.TOP, padx=2, pady=2)
         self.settings_frame.grid_columnconfigure(3, weight=1)
         self.settings_frame.grid_rowconfigure(1, weight=1)
@@ -46,7 +46,7 @@ class App(ctk.CTk):
         # --------------------Entry Frame--------------------#
 
         # entry frame containing the queryinput and search button
-        self.entry_frame = ctk.CTkFrame(self.main, corner_radius=10)
+        self.entry_frame = ctk.CTkFrame(self, corner_radius=10)
         self.entry_frame.pack(pady=20)
 
         # --------------------Inside settings_frame--------------------#
@@ -114,7 +114,7 @@ class App(ctk.CTk):
 
         # --------------------TextBox for displaying the meanings--------------------#
         self.search_results = tk.Text(
-            self.main,
+            self,
             font=self.selected_font,
             fg="white",
             bg="#303031",
@@ -132,7 +132,7 @@ class App(ctk.CTk):
         self.search_results.config(state="disabled")
 
         # running the app
-        self.main.mainloop()
+        self.mainloop()
 
     # --------------------class App Attributes/Functions--------------------#
     def SearchMeaning(self, event=None):
