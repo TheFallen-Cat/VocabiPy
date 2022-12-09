@@ -4,6 +4,7 @@ VocabiPy.
 
 # from ttkwidgets.autocomplete import AutocompleteEntry
 import tkinter as tk
+import json
 import customtkinter as ctk
 import pyperclip as clip
 import dictionarymethods as dt
@@ -21,7 +22,18 @@ class App(ctk.CTk):
         self.main.geometry("500x400")
         self.main.title("VocabiPy")
         self.main.iconbitmap("mainicon.ico")
-        self.selected_font = ("Fixedsys", 12)
+
+        # --------------------Getting Settings-------------------#
+        try:
+            with open("./settings.json", encoding="utf-8") as file:
+                file_settings = file.read()
+        except FileNotFoundError:
+            file_settings = '{"selected_font": "Fixedsys 12", "language": "english"}'
+            with open("./settings.json", "w", encoding="utf-8") as file:
+                file.write(file_settings)
+
+        self.settings = json.loads(file_settings)
+        self.selected_font = self.settings["selected_font"]
 
         # --------------------Settings Frame--------------------#
 
@@ -88,7 +100,7 @@ class App(ctk.CTk):
             placeholder_text="language",
         )
         self.language_entry.grid(row=0, column=1, pady=5, padx=5)
-        self.language_entry.insert(0, "english")
+        self.language_entry.insert(0, self.settings["language"])
 
         # search for the meaning button
         self.search_button = ctk.CTkButton(
@@ -128,6 +140,11 @@ class App(ctk.CTk):
         This method inserts the searched meaning in the text box.
         """
         language_selected = self.language_entry.get()
+
+        # Saving last language searched to file.
+        self.settings["language"] = language_selected
+        self.save_settings()
+
         self.search_results.config(state="normal")
         self.search_results.delete("1.0", tk.END)
         entry = self.query_entry.get()
@@ -176,6 +193,10 @@ class App(ctk.CTk):
         )
         font = font_name_input.get_input()
 
+        # Saving font to file
+        self.settings["selected_font"] = f"{font} 12"
+        self.save_settings()
+
         # trying to change the font
         try:
             # Unfortunately there is no way to configure the font of the ctk widgets yet :(
@@ -201,6 +222,10 @@ class App(ctk.CTk):
         """
         meaning = self.search_results.get("1.0", "end")
         clip.copy(meaning)
+
+    def save_settings(self):
+        with open("./settings.json", "w", encoding="utf-8") as file:
+            file.write(json.dumps(self.settings))
 
 
 app = App()
