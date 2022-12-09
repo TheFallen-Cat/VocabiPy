@@ -28,11 +28,13 @@ class App(ctk.CTk):
             with open("./settings.json", encoding="utf-8") as file:
                 file_settings = file.read()
         except FileNotFoundError:
-            file_settings = '{"selected_font": "Fixedsys 12", "language": "english"}'
+            file_settings = '{"selected_font": "Fixedsys,12", "language": "english"}'
             with open("./settings.json", "w", encoding="utf-8") as file:
                 file.write(file_settings)
 
         self.settings = json.loads(file_settings)
+
+        # This will call the selected font setter and process the string input.
         self.selected_font = self.settings["selected_font"]
 
         # --------------------Settings Frame--------------------#
@@ -45,7 +47,7 @@ class App(ctk.CTk):
 
         # --------------------Entry Frame--------------------#
 
-        # entry frame containing the queryinput and search button
+        # entry frame containing the query input and search button
         self.entry_frame = ctk.CTkFrame(self, corner_radius=10)
         self.entry_frame.pack(pady=20)
 
@@ -134,6 +136,42 @@ class App(ctk.CTk):
         # running the app
         self.mainloop()
 
+    @property
+    def selected_font(self):
+        """
+        A property that returns the selected font.
+        """
+        return self._selected_font
+
+    @selected_font.setter
+    def selected_font(self, param):
+        """
+        Selected font's setter.
+        It can receive either a tuple or a string as input.
+
+        e.g.:
+        self.selected_font = ("Arial", 12)
+        self.selected_font = ("Arial",)
+        self.selected_font = "Arial,12"
+        self.selected_font = "Arial"
+        """
+        if isinstance(param, tuple) and len(param) == 2:
+            self._selected_font = param
+            return
+        if isinstance(param, tuple) and len(param) == 1:
+            self._selected_font = (param[0], 12)
+        if isinstance(param, str) and "," in param:
+            param = param.split(",")
+            self._selected_font = (param[0], int(param[1]))
+            return
+        if isinstance(param, str) and "," not in param:
+            self._selected_font = (param, 12)
+            return
+
+        raise TypeError(
+            "Selected font should be a tuple or a string. Check docstring for more info."
+        )
+
     # --------------------class App Attributes/Functions--------------------#
     def search_meaning(self, event=None):
         """
@@ -192,7 +230,8 @@ class App(ctk.CTk):
         font = font_name_input.get_input()
 
         # Saving font to file
-        self.settings["selected_font"] = f"{font} 12"
+        self.settings["selected_font"] = f"{font},12"
+        self.selected_font = (font, 12)
         self.save_settings()
 
         # trying to change the font
@@ -204,10 +243,9 @@ class App(ctk.CTk):
             # self.theme_menu.config(text_font=(font, 12))
             # self.query_entry.config(text_font=(font, 12))
             # self.search_button.config(text_font=(font, 12))
-            self.selected_font = (font, 12)
             self.search_results.config(font=self.selected_font)
 
-        except:
+        except tk.TclError:
             error_message = "Couldn't change the font!"
             self.search_results.config(state="normal")
             self.search_results.insert(tk.END, error_message)
