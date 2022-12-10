@@ -129,13 +129,9 @@ class App(ctk.CTk):
         self.search_button.grid(row=0, column=2, pady=5, padx=5)
 
         # --------------------TextBox for displaying the meanings--------------------#
-        self.search_results = tk.Text(
+        self.search_results = ctk.CTkTextbox(
             self,
             font=self.selected_font,
-            fg="white",
-            bg="#303031",
-            border=0,
-            relief="flat",
         )
         self.search_results.pack(
             fill=tk.BOTH,
@@ -145,7 +141,7 @@ class App(ctk.CTk):
             ipadx=10,
             ipady=10,
         )
-        self.search_results.config(state="disabled")
+        self.search_results.configure(state="disabled")
 
         # Theme must only be changed after "search_results" is created.
         self.change_theme(self.settings["appearance_mode"])
@@ -200,7 +196,7 @@ class App(ctk.CTk):
         self.settings["language"] = language_selected
         self.save_settings()
 
-        self.search_results.config(state="normal")
+        self.search_results.configure(state="normal")
         self.search_results.delete("1.0", tk.END)
         entry = self.query_entry.get()
         meaning_list = dt.meaning(entry)
@@ -221,7 +217,7 @@ class App(ctk.CTk):
             )
             self.search_results.insert(tk.END, f"{meaning_list[0]}\n\n{tips}")
 
-        self.search_results.config(state="disabled")
+        self.search_results.configure(state="disabled")
 
     def change_theme(self, mode):
         """
@@ -230,12 +226,6 @@ class App(ctk.CTk):
         ctk.set_appearance_mode(mode)
         self.settings["appearance_mode"] = mode
         self.save_settings()
-
-        if mode == "Light":
-            self.search_results.config(fg="#202020", bg="#dadada")
-
-        else:
-            self.search_results.config(fg="white", bg="#303031")
 
     def change_font(self):
         """
