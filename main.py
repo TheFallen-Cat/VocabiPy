@@ -232,18 +232,15 @@ class App(ctk.CTk):
         Change font command.
         """
         # getting the name of the font
-        font_name_input = ctk.CTkInputDialog(
+        font_name_input_dialog = ctk.CTkInputDialog(
             None,
             text="Enter font name...",
             title="Change Font",
         )
 
-        self.selected_font = font_name_input.get_input()
-
-        # Saving font to file. This way of saving allows the user to input the font
-        # size as well. e.g. write Arial,20 in the input dialog.
-        self.settings["selected_font"] = "{},{}".format(*self.selected_font)
-        self.save_settings()
+        if (font := font_name_input_dialog.get_input()) == "":
+            return
+        self.selected_font = font
 
         # trying to change the font
         try:
@@ -254,12 +251,16 @@ class App(ctk.CTk):
             self.language_entry.configure(font=self.selected_font)
             self.search_button.configure(font=self.selected_font)
             self.search_results.configure(font=self.selected_font)
-
         except tk.TclError:
             error_message = "Couldn't change the font!"
             self.search_results.configure(state="normal")
             self.search_results.insert(tk.END, error_message)
             self.search_results.configure(state="disabled")
+
+        # Saving font to file. This way of saving allows the user to input the font
+        # size as well. e.g. write Arial,20 in the input dialog.
+        self.settings["selected_font"] = "{},{}".format(*self.selected_font)
+        self.save_settings()
 
     def copy_meaning(self):
         """
