@@ -161,6 +161,7 @@ class App(ctk.CTk):
         """
         Selected font's setter.
         It can receive either a tuple or a string as input.
+        Default font size is 12. Minimum size is 6, maximum size is 25.
 
         e.g.:
         self.selected_font = ("Arial", 12)
@@ -169,13 +170,22 @@ class App(ctk.CTk):
         self.selected_font = "Arial"
         """
         if isinstance(param, tuple) and len(param) == 2:
+            if param[1] < 6:
+                param = (param[0], 6)
+            elif param[1] > 25:
+                param = (param[0], 25)
             self._selected_font = param
             return
         if isinstance(param, tuple) and len(param) == 1:
             self._selected_font = (param[0], 12)
         if isinstance(param, str) and "," in param:
-            param = param.split(",")
-            self._selected_font = (param[0], int(param[1]))
+            font, font_size = param.split(",")
+            font_size = int(font_size)
+            if font_size < 6:
+                font_size = 6
+            elif font_size > 25:
+                font_size = 25
+            self._selected_font = (font, font_size)
             return
         if isinstance(param, str) and "," not in param:
             self._selected_font = (param, 12)
