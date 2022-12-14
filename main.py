@@ -238,7 +238,7 @@ class App(ctk.CTk):
             title="Change Font",
         )
 
-        if (font := font_name_input_dialog.get_input()) == "":
+        if not (font := font_name_input_dialog.get_input()):
             return
         self.selected_font = font
 
